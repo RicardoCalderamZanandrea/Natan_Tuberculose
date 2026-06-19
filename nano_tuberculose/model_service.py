@@ -140,6 +140,17 @@ def cast_to_str(X):
     return pd.DataFrame(X).astype(str).replace("nan", "ignorado")
 
 
+# O pipeline da regressão logística foi serializado no notebook, onde
+# cast_to_str vivia no módulo __main__. Sob gunicorn (ou qualquer entrypoint
+# diferente deste módulo), __main__ não tem a função e o unpickle do joblib
+# falha com: "Can't get attribute 'cast_to_str' on <module '__main__'>".
+# Registramos a função em __main__ para o pickle conseguir resolvê-la.
+import __main__ as _main_module  # noqa: E402
+
+if not hasattr(_main_module, "cast_to_str"):
+    _main_module.cast_to_str = cast_to_str
+
+
 def _build_dataframe(data: dict) -> pd.DataFrame:
     """Convert a JSON-like dict into a DataFrame the pipeline expects."""
     return pd.DataFrame([data])
