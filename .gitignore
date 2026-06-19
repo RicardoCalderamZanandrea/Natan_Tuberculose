@@ -1,0 +1,19 @@
+# --- Node / Vite (tb-predict) ---
+node_modules/
+dist/
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
+
+# --- Python (nano_tuberculose) ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# --- Sistema / editor ---
+.DS_Store
+.idea/
+.vscode/

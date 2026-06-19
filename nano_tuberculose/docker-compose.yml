@@ -1,0 +1,13 @@
+services:
+  api:
+    build: .
+    ports:
+      # Host 5001 -> container 5000. A porta 5000 do host é usada pelo
+      # AirPlay Receiver do macOS, então expomos a API em 5001.
+      - "5001:5000"
+    volumes:
+      # Monta apenas os arquivos de modelo que existem na pasta.
+      # O model_service procura baseline_pipeline_v3.pkl na lista de fallback.
+      - ./baseline_pipeline_v3.pkl:/app/baseline_pipeline_v3.pkl:ro
+      - ./modelo_redeneural_tuberculose_v1.keras:/app/modelo_redeneural_tuberculose_v1.keras:ro
+    restart: unless-stopped
