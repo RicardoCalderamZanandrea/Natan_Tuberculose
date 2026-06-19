@@ -1,7 +1,7 @@
 # Template processado pelo entrypoint oficial do nginx (envsubst) no boot.
-# ${NGINX_PORT} vem da env (default 80) — alinhe com a porta do domínio no EasyPanel.
+# ${PORT} vem da env (default 5051) — alinhe com a porta do domínio no EasyPanel.
 server {
-    listen ${NGINX_PORT};
+    listen ${PORT};
     server_name _;
 
     root /usr/share/nginx/html;

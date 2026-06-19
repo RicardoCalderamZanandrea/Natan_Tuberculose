@@ -20,15 +20,15 @@ COPY app.py model_service.py ./
 #   modelo_redeneural_tuberculose_v1.keras
 COPY baseline_pipeline_v3.pkl modelo_redeneural_tuberculose_v1.keras ./
 
-# Porta e nº de workers configuráveis por variável de ambiente no EasyPanel.
-ENV PORT=5000 \
+# Porta (env PORT) e nº de workers configuráveis no EasyPanel.
+ENV PORT=5050 \
     WEB_CONCURRENCY=2
 
-EXPOSE 5000
+EXPOSE 5050
 
 # Healthcheck usa o endpoint /health (não exige curl na imagem).
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD python -c "import os,urllib.request,sys; url='http://127.0.0.1:'+os.environ.get('PORT','5000')+'/health'; sys.exit(0 if urllib.request.urlopen(url, timeout=5).status==200 else 1)" || exit 1
+    CMD python -c "import os,urllib.request,sys; url='http://127.0.0.1:'+os.environ.get('PORT','5050')+'/health'; sys.exit(0 if urllib.request.urlopen(url, timeout=5).status==200 else 1)" || exit 1
 
 # Forma shell para expandir ${PORT} e ${WEB_CONCURRENCY} em runtime.
 CMD gunicorn --bind 0.0.0.0:${PORT} --workers ${WEB_CONCURRENCY} --timeout 120 app:app

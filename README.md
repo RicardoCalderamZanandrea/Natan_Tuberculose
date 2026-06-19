@@ -126,14 +126,14 @@ apenas o *Build Context*:
 |-----------------------|--------------------------------|
 | Build Context / Path  | `nano_tuberculose`             |
 | Dockerfile            | `Dockerfile`                   |
-| Porta exposta         | `5000`                         |
+| Porta do domínio      | `5050`                         |
 
 Os modelos `.pkl` e `.keras` já vão **embarcados na imagem** (sem necessidade de
-volume). Variáveis de ambiente (opcionais):
+volume). Variáveis de ambiente:
 
 | Variável          | Padrão | Descrição                                  |
 |-------------------|--------|--------------------------------------------|
-| `PORT`            | `5000` | Porta em que o gunicorn escuta             |
+| `PORT`            | `5050` | Porta em que o gunicorn escuta             |
 | `WEB_CONCURRENCY` | `2`    | Nº de workers do gunicorn (memória ↑)      |
 
 > O CORS já está liberado (`origins: *`), então o frontend pode chamar a API de
@@ -145,24 +145,25 @@ volume). Variáveis de ambiente (opcionais):
 |-----------------------|--------------------------------|
 | Build Context / Path  | `tb-predict`                   |
 | Dockerfile            | `Dockerfile`                   |
-| Porta do domínio      | `80`                           |
-
-> ⚠️ **Causa de "Not Found":** a porta do **domínio** no EasyPanel precisa bater
-> com a porta em que o nginx escuta. Por padrão o nginx escuta na **80**, então
-> configure o domínio para a porta **80**. Se preferir outra (ex.: o EasyPanel
-> sugere 3000), defina a env `NGINX_PORT` com o mesmo número.
+| Porta do domínio      | `5051`                         |
 
 Variáveis de ambiente:
 
 | Variável       | Obrigatória | Exemplo / Padrão                          |
 |----------------|-------------|-------------------------------------------|
 | `VITE_API_URL` | sim         | `https://tb-api.seu-dominio.com/predict`  |
-| `NGINX_PORT`   | não         | `80` (alinhe com a porta do domínio)      |
+| `PORT`         | não         | `5051` (porta em que o nginx escuta)      |
 
 `VITE_API_URL` é a URL **pública** da API (o navegador acessa a API diretamente,
 então use o domínio público, **não** o nome interno do container). Ela é injetada
 **em runtime** (via `config.js` gerado no boot), então basta alterar a env e
 **reiniciar** o serviço — não precisa rebuildar.
+
+> ⚠️ **Causa de "Not Found" / "502 Service is not reachable":** a porta do
+> **domínio** de cada serviço no EasyPanel precisa ser **igual** à porta em que o
+> container escuta (env `PORT`): **5050** para a API e **5051** para o front. Se
+> não baterem, o proxy não alcança o container. Ambas as portas são controláveis
+> pela env `PORT` — mude a env e a porta do domínio em conjunto.
 
 ## Stack
 
