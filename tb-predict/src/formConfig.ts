@@ -20,8 +20,14 @@ export interface Section {
   fields: Field[];
 }
 
+// Opção padrão de todo select: o paciente não informou / não quis informar.
+// Vai para a API como string vazia; os encoders do modelo usam handle_unknown,
+// então um valor não informado é tratado como categoria desconhecida (seguro).
+const NAO_INFORMADO: Option = { value: "", label: "Não informado" };
+
 // Reused option sets ------------------------------------------------------
 const SIM_NAO_IGNORADO: Option[] = [
+  NAO_INFORMADO,
   { value: "1", label: "Sim" },
   { value: "2", label: "Não" },
   { value: "9", label: "Ignorado" },
@@ -29,6 +35,7 @@ const SIM_NAO_IGNORADO: Option[] = [
 
 // UF — código IBGE
 export const UF_OPTIONS: Option[] = [
+  NAO_INFORMADO,
   { value: "11", label: "RO — Rondônia" },
   { value: "12", label: "AC — Acre" },
   { value: "13", label: "AM — Amazonas" },
@@ -68,6 +75,7 @@ export const SECTIONS: Section[] = [
         label: "Sexo",
         type: "select",
         options: [
+          NAO_INFORMADO,
           { value: "M", label: "Masculino" },
           { value: "F", label: "Feminino" },
         ],
@@ -77,6 +85,7 @@ export const SECTIONS: Section[] = [
         label: "Gestante",
         type: "select",
         options: [
+          NAO_INFORMADO,
           { value: "1", label: "1º trimestre" },
           { value: "2", label: "2º trimestre" },
           { value: "3", label: "3º trimestre" },
@@ -91,6 +100,7 @@ export const SECTIONS: Section[] = [
         label: "Raça / Cor",
         type: "select",
         options: [
+          NAO_INFORMADO,
           { value: "1", label: "Branca" },
           { value: "2", label: "Preta" },
           { value: "3", label: "Amarela" },
@@ -104,6 +114,7 @@ export const SECTIONS: Section[] = [
         label: "Escolaridade",
         type: "select",
         options: [
+          NAO_INFORMADO,
           { value: "0", label: "Analfabeto" },
           { value: "1", label: "1ª a 4ª série incompleta" },
           { value: "2", label: "4ª série completa" },
@@ -135,6 +146,7 @@ export const SECTIONS: Section[] = [
         label: "Tipo de entrada",
         type: "select",
         options: [
+          NAO_INFORMADO,
           { value: "1", label: "Caso novo" },
           { value: "2", label: "Recidiva" },
           { value: "3", label: "Reingresso após abandono" },
@@ -148,6 +160,7 @@ export const SECTIONS: Section[] = [
         label: "Forma clínica",
         type: "select",
         options: [
+          NAO_INFORMADO,
           { value: "1", label: "Pulmonar" },
           { value: "2", label: "Extrapulmonar" },
           { value: "3", label: "Pulmonar + Extrapulmonar" },
@@ -158,6 +171,7 @@ export const SECTIONS: Section[] = [
         label: "Resultado HIV",
         type: "select",
         options: [
+          NAO_INFORMADO,
           { value: "1", label: "Positivo" },
           { value: "2", label: "Negativo" },
           { value: "3", label: "Em andamento" },
@@ -194,6 +208,7 @@ export const SECTIONS: Section[] = [
         label: "Tratamento Diretamente Observado (TDO)",
         type: "select",
         options: [
+          NAO_INFORMADO,
           { value: "1", label: "Sim" },
           { value: "2", label: "Não" },
         ],
@@ -203,6 +218,7 @@ export const SECTIONS: Section[] = [
         label: "Caso de transferência",
         type: "select",
         options: [
+          NAO_INFORMADO,
           { value: "1", label: "Sim" },
           { value: "2", label: "Não" },
         ],
@@ -211,26 +227,26 @@ export const SECTIONS: Section[] = [
   },
 ];
 
-// Sensible starting values (mirror the example payload from the API contract).
-export const DEFAULT_PATIENT: PatientPayload = {
-  idade_anos: 35,
-  CS_SEXO: "M",
-  CS_GESTANT: "6",
-  CS_RACA: "1",
-  CS_ESCOL_N: "3",
-  SG_UF: "35",
-  TRATAMENTO: "1",
-  POP_LIBER: "2",
-  POP_RUA: "2",
-  POP_SAUDE: "2",
-  POP_IMIG: "2",
-  FORMA: "1",
-  AGRAVALCOO: "2",
-  AGRAVDIABE: "2",
-  AGRAVDOENC: "2",
-  AGRAVOUTRA: "2",
-  HIV: "2",
-  SG_UF_2: "35",
-  TRATSUP_AT: "1",
-  TRANSF: "2",
+// Formulário sempre em branco: idade vazia e todo select em "Não informado" ("").
+export const EMPTY_PATIENT: PatientPayload = {
+  idade_anos: "",
+  CS_SEXO: "",
+  CS_GESTANT: "",
+  CS_RACA: "",
+  CS_ESCOL_N: "",
+  SG_UF: "",
+  TRATAMENTO: "",
+  POP_LIBER: "",
+  POP_RUA: "",
+  POP_SAUDE: "",
+  POP_IMIG: "",
+  FORMA: "",
+  AGRAVALCOO: "",
+  AGRAVDIABE: "",
+  AGRAVDOENC: "",
+  AGRAVOUTRA: "",
+  HIV: "",
+  SG_UF_2: "",
+  TRATSUP_AT: "",
+  TRANSF: "",
 };

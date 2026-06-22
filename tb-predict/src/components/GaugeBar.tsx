@@ -2,25 +2,22 @@ import type { RiskTheme } from "../risk";
 
 interface GaugeBarProps {
   probAbandono: number;
-  probCura: number;
   theme: RiskTheme;
 }
 
 /**
- * Horizontal gauge comparing probability of abandonment vs cure.
+ * Horizontal gauge showing the probability of treatment abandonment.
  * The filled portion is the abandonment risk, coloured by risk band.
  */
-export default function GaugeBar({ probAbandono, probCura, theme }: GaugeBarProps) {
+export default function GaugeBar({ probAbandono, theme }: GaugeBarProps) {
   const width = Math.max(0, Math.min(100, probAbandono));
 
   return (
     <div>
       <div className="mb-2 flex items-end justify-between text-sm">
         <span className="font-semibold text-rose-600">
-          Abandono <span className="tabular-nums">{probAbandono.toFixed(1)}%</span>
-        </span>
-        <span className="font-semibold text-brand-dark">
-          Cura <span className="tabular-nums">{probCura.toFixed(1)}%</span>
+          Risco de abandono{" "}
+          <span className="tabular-nums">{probAbandono.toFixed(1)}%</span>
         </span>
       </div>
 

@@ -112,7 +112,7 @@ export default function Form({
           disabled={loading}
           className="rounded-xl px-5 py-3 text-sm font-semibold text-brand-dark transition hover:bg-mint-50 disabled:opacity-60"
         >
-          Restaurar exemplo
+          Limpar formulário
         </button>
         <button
           type="submit"

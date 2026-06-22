@@ -1,7 +1,9 @@
-// Payload sent to POST /predict.
+// Payload sent to the prediction API.
 // Every field is a string code EXCEPT idade_anos, which is a number.
+// Empty string ("") means "Não informado" — the model treats it as an unknown
+// category (the encoders use handle_unknown, so it is safe to send).
 export interface PatientPayload {
-  idade_anos: number;
+  idade_anos: number | "";
   CS_SEXO: string;
   CS_GESTANT: string;
   CS_RACA: string;
@@ -23,16 +25,11 @@ export interface PatientPayload {
   TRANSF: string;
 }
 
+// Resposta da API (rota /predict/neural): uma única análise de risco.
 export interface ModelResult {
   model: string;
   prediction: number;
   prediction_label: string;
   probability_abandono: number;
-  probability_cura: number;
   recommendation: string;
-}
-
-export interface PredictResponse {
-  logistic_regression: ModelResult;
-  neural_network: ModelResult;
 }

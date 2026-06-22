@@ -46,16 +46,12 @@ export function riskFromProbability(probAbandono: number): RiskTheme {
   };
 }
 
-import type { ModelResult, PredictResponse } from "./types";
+import type { ModelResult } from "./types";
 
-export interface Consolidated {
-  probAbandono: number; // média das duas análises
-  probCura: number;
+export interface Verdict {
+  probAbandono: number;
   theme: RiskTheme;
   recommendation: string;
-  agree: boolean; // os dois métodos concordam no desfecho previsto?
-  min: number; // menor probabilidade de abandono entre as análises
-  max: number; // maior probabilidade de abandono entre as análises
 }
 
 // Recomendação clínica em linguagem comum, derivada da faixa de risco.
@@ -70,25 +66,16 @@ function recommendationFor(level: RiskLevel): string {
 }
 
 /**
- * Consolida as duas análises em um único veredito clínico.
- * A probabilidade exibida é a média das duas; o desfecho usa as mesmas
- * faixas de risco (<40 baixo · 40–70 moderado · >70 alto).
+ * Monta o veredito clínico a partir da análise de risco.
+ * O desfecho usa as faixas de risco (<40 baixo · 40–70 moderado · >70 alto).
  */
-export function consolidate(data: PredictResponse): Consolidated {
-  const a: ModelResult = data.logistic_regression;
-  const b: ModelResult = data.neural_network;
-
-  const probAbandono = (a.probability_abandono + b.probability_abandono) / 2;
-  const probCura = (a.probability_cura + b.probability_cura) / 2;
+export function verdictFor(result: ModelResult): Verdict {
+  const probAbandono = result.probability_abandono;
   const theme = riskFromProbability(probAbandono);
 
   return {
     probAbandono,
-    probCura,
     theme,
     recommendation: recommendationFor(theme.level),
-    agree: a.prediction_label === b.prediction_label,
-    min: Math.min(a.probability_abandono, b.probability_abandono),
-    max: Math.max(a.probability_abandono, b.probability_abandono),
   };
 }

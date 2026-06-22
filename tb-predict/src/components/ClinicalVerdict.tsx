@@ -1,13 +1,12 @@
-import type { Consolidated } from "../risk";
+import type { Verdict } from "../risk";
 import GaugeBar from "./GaugeBar";
 
 /**
  * Veredito clínico único, em linguagem comum (sem jargão de ML).
- * Mostra a faixa de risco, a probabilidade consolidada e a conduta sugerida.
- * O detalhamento por modelo fica em "Detalhes técnicos" (App.tsx).
+ * Mostra a faixa de risco, a probabilidade de abandono e a conduta sugerida.
  */
-export default function ClinicalVerdict({ data }: { data: Consolidated }) {
-  const { theme, probAbandono, probCura, recommendation, agree, min, max } = data;
+export default function ClinicalVerdict({ data }: { data: Verdict }) {
+  const { theme, probAbandono, recommendation } = data;
 
   return (
     <div
@@ -31,7 +30,7 @@ export default function ClinicalVerdict({ data }: { data: Consolidated }) {
       </header>
 
       <div className="mt-6">
-        <GaugeBar probAbandono={probAbandono} probCura={probCura} theme={theme} />
+        <GaugeBar probAbandono={probAbandono} theme={theme} />
       </div>
 
       {/* Conduta sugerida */}
@@ -61,18 +60,6 @@ export default function ClinicalVerdict({ data }: { data: Consolidated }) {
           </p>
         </div>
       </div>
-
-      {/* Aviso de divergência entre as análises */}
-      {!agree && (
-        <p className="mt-4 flex items-start gap-2 rounded-xl bg-amber-50 p-3 text-sm leading-relaxed text-amber-800">
-          <span aria-hidden className="mt-0.5">⚠️</span>
-          <span>
-            As duas análises automáticas divergiram (estimativas de{" "}
-            <strong>{min.toFixed(0)}%</strong> a <strong>{max.toFixed(0)}%</strong>{" "}
-            de abandono). Recomenda-se cautela e avaliação clínica complementar.
-          </span>
-        </p>
-      )}
     </div>
   );
 }

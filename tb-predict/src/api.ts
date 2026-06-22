@@ -1,4 +1,4 @@
-import type { PatientPayload, PredictResponse } from "./types";
+import type { PatientPayload, ModelResult } from "./types";
 
 // Resolução da URL da API, em ordem de prioridade:
 //  1. window.__APP_CONFIG__.API_URL  -> injetado em runtime pelo container
@@ -15,18 +15,28 @@ const API_URL =
   import.meta.env.VITE_API_URL ??
   "http://localhost:5001/predict";
 
+// A análise usa um único modelo: a rota /predict/neural. Se a URL configurada
+// apontar para a rota combinada (.../predict), redirecionamos para a neural —
+// assim o deploy existente continua funcionando sem mudar a env.
+function neuralEndpoint(base: string): string {
+  if (/\/predict\/?$/.test(base)) {
+    return base.replace(/\/predict\/?$/, "/predict/neural");
+  }
+  return base;
+}
+
 /**
- * Sends the patient payload to the prediction API.
- * Values go on the wire exactly as the codes the form holds:
- * idade_anos as a number, every other field as a string code.
+ * Sends the patient payload to the prediction API and returns a single
+ * risk analysis. Values go on the wire exactly as the codes the form holds:
+ * idade_anos as a number, every other field as a string code ("" = não informado).
  */
 export async function predict(
   payload: PatientPayload,
-): Promise<PredictResponse> {
+): Promise<ModelResult> {
   let response: Response;
 
   try {
-    response = await fetch(API_URL, {
+    response = await fetch(neuralEndpoint(API_URL), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -51,5 +61,5 @@ export async function predict(
     );
   }
 
-  return (await response.json()) as PredictResponse;
+  return (await response.json()) as ModelResult;
 }
