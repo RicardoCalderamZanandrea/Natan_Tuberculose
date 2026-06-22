@@ -26,7 +26,13 @@ server {
     }
 
     # SPA: qualquer rota desconhecida cai no index.html.
+    # O index.html (ponto de entrada) NUNCA pode ser cacheado: ele referencia
+    # os assets com hash, então precisa ser sempre revalidado para que um novo
+    # deploy seja servido imediatamente (sem isso, o browser/proxy mantém a
+    # versão antiga). Os assets em /assets/ continuam com cache agressivo.
     location / {
         try_files $uri $uri/ /index.html;
+        add_header Cache-Control "no-store, no-cache, must-revalidate";
+        expires -1;
     }
 }
